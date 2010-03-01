@@ -91,10 +91,11 @@ module Crummy
         options[:seperator] = "crumb" if options[:format] == :xml 
       end
       options[:links] = true if options[:links] == nil
+      options[:current] = true if options[:current].nil?
       case options[:format]
       when :html
         crumbs.collect do |crumb|
-          crumb_to_html crumb, options[:links]
+          crumb_to_html crumb, options[:links], options[:current]
         end * options[:seperator]
       when :xml
         crumbs.collect do |crumb|
@@ -105,9 +106,9 @@ module Crummy
       end
     end
     
-    def crumb_to_html(crumb, links)
+    def crumb_to_html(crumb, links, current)
       name, url = crumb
-      url && links ? link_to(name, url) : name
+      url && links ? (current ? link_to(name, url)) : link_to_unless_current(name, url) : name
     end
     
     def crumb_to_xml(crumb, links, seperator)
